@@ -1,0 +1,25 @@
+{
+  "name": "blogs",
+  "version": "1.0.0",
+  "description": "will be adding later",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cd server && npm i && nodemon index.js",
+    "client": "cd client && npm i && npm run dev",
+    "dev": "concurrently -k \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tejaswini-41/Blogs.git"
+  },
+  "author": "tejaswini durge",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tejaswini-41/Blogs/issues"
+  },
+  "homepage": "https://github.com/Tejaswini-41/Blogs#readme",
+  "dependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
