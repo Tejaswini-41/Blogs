@@ -3,6 +3,7 @@ import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import Comment from '../../components/Comment.jsx';
 import './BlogPost.css';
 import Sidebar from '../../components/Sidebar.jsx';
+import PostImage from '../../components/PostImage';
 
 function BlogPost() {
   const { id } = useParams();
@@ -136,32 +137,32 @@ function BlogPost() {
   };
 
   // Handle post deletion
-  const handleDeletePost = async () => {
-    if (!window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
-      return;
-    }
+  // const handleDeletePost = async () => {
+  //   if (!window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+  //     return;
+  //   }
     
-    setIsDeleting(true);
+  //   setIsDeleting(true);
     
-    try {
-      const response = await fetch(`http://localhost:5000/posts/${id}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      });
+  //   try {
+  //     const response = await fetch(`http://localhost:5000/posts/${id}`, {
+  //       method: 'DELETE',
+  //       credentials: 'include',
+  //     });
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to delete post');
-      }
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.message || 'Failed to delete post');
+  //     }
       
-      // Redirect to home page after successful deletion
-      navigate('/');
-    } catch (error) {
-      console.error('Error deleting post:', error);
-      alert('Failed to delete post: ' + error.message);
-      setIsDeleting(false);
-    }
-  };
+  //     // Redirect to home page after successful deletion
+  //     navigate('/');
+  //   } catch (error) {
+  //     console.error('Error deleting post:', error);
+  //     alert('Failed to delete post: ' + error.message);
+  //     setIsDeleting(false);
+  //   }
+  // };
 
   return (
     <div className="quora-container">
@@ -190,13 +191,9 @@ function BlogPost() {
                     <Link to={`/edit-post/${id}`} className="edit-post-btn">
                       Edit Post
                     </Link>
-                    <button 
-                      className="delete-post-btn"
-                      onClick={handleDeletePost}
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? 'Deleting...' : 'Delete Post'}
-                    </button>
+                    <Link to={`/delete-post/${id}`} className="delete-post-btn">
+                      Delete Post
+                    </Link>
                   </div>
                 )}
               </div>
@@ -205,18 +202,7 @@ function BlogPost() {
                 {post.content.split('\n').map((paragraph, idx) => (
                   paragraph && <p key={idx}>{paragraph}</p>
                 ))}
-                {post.imageUrl && (
-                  <div className="post-image-full">
-                    <img 
-                      src={post.imageUrl || 'https://cdn.logojoy.com/wp-content/uploads/2018/05/30164225/572-768x591.png'} 
-                      alt={post.title} 
-                      onError={(e) => {
-                        e.target.onerror = null; // Prevent infinite loop
-                        e.target.src = 'https://placehold.co/600x400/e0e0e0/0a5c5c?text=Image+Not+Found';
-                      }}
-                    />
-                  </div>
-                )}
+                {post.imageUrl && <PostImage src={post.imageUrl} alt={post.title} fullSize={true} />}
               </div>
               
               <div className="post-actions">
