@@ -1,18 +1,28 @@
 import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
-const commentSchema = mongoose.Schema(
+const commentSchema = Schema(
   {
     text: { type: String, required: true },
-    author: { type: String, required: true },
+    author: {
+      type: Schema.Types.ObjectId, 
+      ref: 'User',
+      required: true
+    },
   },
   { timestamps: true }
 );
 
-const postSchema = mongoose.Schema(
+const postSchema = Schema(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
-    comments: [commentSchema], //comments
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    comments: [commentSchema],
   },
   { timestamps: true }
 );
