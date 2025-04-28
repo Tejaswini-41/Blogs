@@ -1,20 +1,5 @@
 import Post from "../models/Post.js"; 
 
-// const posts = [
-//   { id: 1, title: 'First Blog Post', content: 'This is the first post.' },
-//   { id: 2, title: 'Second Blog Post', content: 'This is the second post.' },
-// ];
-
-// const comments = {
-//   1: [
-//     { id: 1, text: 'Great post!', author: 'tejuu' },
-//     { id: 2, text: 'Very informative.', author: 'arya' },
-//   ],
-//   2: [
-//     { id: 3, text: 'Thanks for sharing!', author: 'Charlie' },
-//   ],
-// };
-
 // Get all posts
 export const getPosts = async (req, res) => {
     try {
@@ -36,25 +21,6 @@ export const getPostById = async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
     res.json(post);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching post', error: error.message });
-  }
-};
-
-export const getPost = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Find the post and populate the author and comments.author fields
-    const post = await Post.findById(id)
-      .populate('author', 'displayName profileImage') // Populate post author
-      .populate('comments.author', 'displayName profileImage'); // Populate comment authors
-
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
-    }
-
-    res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching post', error: error.message });
   }
@@ -91,5 +57,88 @@ export const addComment = async (req, res) => {
     res.status(201).json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: 'Error adding comment', error: error.message });
+  }
+};
+
+// Edit a comment
+export const editComment = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+    const { text } = req.body;
+
+    // Ensure user is authenticated
+    if (!req.user) {
+      return res.status(401).json({ message: 'You must be logged in to edit a comment' });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Find the comment
+    const comment = post.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    // Check if the user is the author of the comment
+    if (comment.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You can only edit your own comments' });
+    }
+
+    // Update the comment
+    comment.text = text;
+    await post.save();
+
+    // Return the updated post with populated author info
+    const updatedPost = await Post.findById(postId)
+      .populate('author', 'displayName profileImage')
+      .populate('comments.author', 'displayName profileImage');
+
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: 'Error editing comment', error: error.message });
+  }
+};
+
+// Delete a comment
+export const deleteComment = async (req, res) => {
+  try {
+    const { postId, commentId } = req.params;
+
+    // Ensure user is authenticated
+    if (!req.user) {
+      return res.status(401).json({ message: 'You must be logged in to delete a comment' });
+    }
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+
+    // Find the comment
+    const comment = post.comments.id(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    // Check if the user is the author of the comment
+    if (comment.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You can only delete your own comments' });
+    }
+
+    // Remove the comment
+    comment.deleteOne();
+    await post.save();
+
+    // Return the updated post with populated author info
+    const updatedPost = await Post.findById(postId)
+      .populate('author', 'displayName profileImage')
+      .populate('comments.author', 'displayName profileImage');
+
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting comment', error: error.message });
   }
 };

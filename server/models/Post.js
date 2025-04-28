@@ -9,6 +9,7 @@ const commentSchema = Schema(
       ref: 'User',
       required: true
     },
+    // readtime: { type: Number, default: 0 }, // Estimated reading time for the comment
   },
   { timestamps: true }
 );

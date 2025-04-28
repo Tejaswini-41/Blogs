@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import Comment from '../../components/Comment.jsx';
 import './BlogPost.css';
 import Sidebar from '../../components/Sidebar.jsx';
@@ -12,6 +12,8 @@ function BlogPost() {
   const [user, setUser] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [commenting, setCommenting] = useState(false);
+  const commentsRef = useRef(null);
+  const location = useLocation();
   
   // Fetch current user
   useEffect(() => {
@@ -39,6 +41,15 @@ function BlogPost() {
       });
   }, [id]);
 
+  useEffect(() => {
+    // Scroll to comments section if URL has #comments hash
+    if (location.hash === '#comments' && commentsRef.current) {
+      setTimeout(() => {
+        commentsRef.current.scrollIntoView({ behavior: 'smooth' });
+      }, 500); // Small delay to ensure content is loaded
+    }
+  }, [location.hash, post]);
+
   // Handle comment submission
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -65,6 +76,42 @@ function BlogPost() {
       console.error('Error adding comment:', error);
     } finally {
       setCommenting(false);
+    }
+  };
+
+  const handleEditComment = async (commentId, newText) => {
+    try {
+      const response = await fetch(`http://localhost:5000/posts/${id}/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ text: newText })
+      });
+      
+      if (!response.ok) throw new Error('Failed to edit comment');
+      
+      const updatedPost = await response.json();
+      setPost(updatedPost);
+    } catch (error) {
+      console.error('Error editing comment:', error);
+    }
+  };
+  
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/posts/${id}/comments/${commentId}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) throw new Error('Failed to delete comment');
+      
+      const updatedPost = await response.json();
+      setPost(updatedPost);
+    } catch (error) {
+      console.error('Error deleting comment:', error);
     }
   };
 
@@ -126,7 +173,7 @@ function BlogPost() {
                 </div>
               </div>
               
-              <div className="comments-section">
+              <div className="comments-section" ref={commentsRef}>
                 <h3>Comments ({post.comments?.length || 0})</h3>
                 
  {/* Comment Form */}
@@ -160,7 +207,12 @@ function BlogPost() {
                       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                       .map((comment, index) => (
                         <li key={comment._id || index} className="comment-item">
-                          <Comment comment={comment} />
+                          <Comment 
+                            comment={comment} 
+                            currentUser={user}
+                            onEdit={handleEditComment}
+                            onDelete={handleDeleteComment}
+                          />
                         </li>
                       ))}
                   </ul>

@@ -103,10 +103,13 @@ body {
   padding: 0.4rem 0.8rem;
   border-radius: 1rem;
   text-decoration: none;
+  position: relative;
+  transition: all 0.2s ease;
 }
 
 .post-action:hover {
-  background-color: #f7f7f8;
+  background-color: #f1f1f1;
+  color: #2e69ff;
 }
 
 .read-more {
@@ -309,4 +312,86 @@ body {
   color: #282829;
   font-size: 14px;
   line-height: 1.5;
+}
+
+.comment-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.comment-action-btn {
+  background: none;
+  border: none;
+  font-size: 12px;
+  color: #636466;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.comment-action-btn:hover {
+  background-color: #f1f1f1;
+}
+
+.comment-action-btn.edit {
+  color: #2e69ff;
+}
+
+.comment-action-btn.delete {
+  color: #b92b27;
+}
+
+.comment-edit-form textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 8px;
+}
+
+.comment-edit-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.comment-edit-actions button {
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.comment-edit-actions button:first-child {
+  background-color: #2e69ff;
+  color: white;
+  border: none;
+}
+
+.comment-edit-actions button:last-child {
+  background-color: transparent;
+  border: 1px solid #e2e2e2;
+}
+
+/* Add smooth scrolling for the entire document */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Style for focused comment section */
+.comments-section:target {
+  animation: highlight 1s ease;
+}
+
+@keyframes highlight {
+  0% { background-color: rgba(46, 105, 255, 0.1); }
+  100% { background-color: transparent; }
+}
+
+/* Make comment button more prominent if user is logged in */
+.post-action.comment-enabled {
+  color: #2e69ff;
 }
