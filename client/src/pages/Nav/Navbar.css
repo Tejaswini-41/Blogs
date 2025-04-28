@@ -48,3 +48,26 @@ nav {
 .navbar-links a:hover {
   background-color: #2366d1;
 }
+
+.create-post-btn {
+  background-color: #0a5c5c;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.create-post-btn::before {
+  content: "+";
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.create-post-btn:hover {
+  background-color: #083e3e;
+}

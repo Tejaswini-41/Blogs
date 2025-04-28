@@ -550,3 +550,99 @@ html {
     border-width: 0.5px;
   }
 }
+
+/* Add these styles to your existing CSS */
+
+/* Sort Controls */
+.sort-controls {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  background-color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+
+.sort-controls label {
+  font-weight: 600;
+  color: #333;
+  margin-right: 0.75rem;
+}
+
+.sort-select {
+  padding: 0.5rem 1rem 0.5rem 0.75rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: #333;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem top 50%;
+  background-size: 0.65rem auto;
+}
+
+.sort-select:focus {
+  outline: none;
+  border-color: #0a5c5c;
+  box-shadow: 0 0 0 2px rgba(10, 92, 92, 0.1);
+}
+
+/* No posts message */
+.no-posts {
+  text-align: center;
+  padding: 3rem;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e8e8e8;
+}
+
+.no-posts p {
+  color: #777;
+  font-size: 1.05rem;
+  margin-bottom: 1.5rem;
+}
+
+.create-first-post {
+  display: inline-block;
+  background-color: #0a5c5c;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  border-radius: 24px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.create-first-post:hover {
+  background-color: #083e3e;
+}
+
+/* Sidebar create post button */
+.sidebar-create-post {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #0a5c5c;
+  color: white;
+  padding: 0.75rem 1rem;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.sidebar-create-post:hover {
+  background-color: #083e3e;
+}
+
+.create-icon {
+  font-weight: bold;
+  font-size: 1.2rem;
+}

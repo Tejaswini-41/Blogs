@@ -3,12 +3,32 @@ import { Link } from 'react-router-dom';
 import { FaRegComment, FaRegThumbsUp } from 'react-icons/fa';
 
 function PostCard({ post, user }) {
+  // Format date in a nice readable format
+  const formatDate = (dateString) => {
+    const options = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className="quora-post-card">
       <div className="post-metadata">
+        {post.author?.profileImage && (
+          <img 
+            src={post.author.profileImage} 
+            alt={post.author.displayName || 'User'} 
+            className="post-author-avatar"
+          />
+        )}
         <span className="post-author">{post.author?.displayName || 'Anonymous'}</span>
-        <span>•</span>
-        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+        <span className="post-date">
+          Posted on {formatDate(post.createdAt)}
+        </span>
       </div>
       
       <Link to={`/post/${post._id}`} className="post-title-link">

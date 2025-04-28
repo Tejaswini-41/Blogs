@@ -3,7 +3,11 @@ import Post from "../models/Post.js";
 // Get all posts
 export const getPosts = async (req, res) => {
     try {
-        const posts = await Post.find({});
+        // Get posts and sort by createdAt in descending order (newest first)
+        const posts = await Post.find({})
+            .sort({ createdAt: -1 })
+            .populate('author', 'displayName profileImage');
+            
         res.json(posts);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching posts', error: error.message });
@@ -140,5 +144,41 @@ export const deleteComment = async (req, res) => {
     res.status(200).json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: 'Error deleting comment', error: error.message });
+  }
+};
+
+// Create a new post
+export const createPost = async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    // Validate input
+    if (!title || !content) {
+      return res.status(400).json({ message: 'Title and content are required' });
+    }
+
+    // Ensure user is authenticated (this is also checked by middleware)
+    if (!req.user) {
+      return res.status(401).json({ message: 'You must be logged in to create a post' });
+    }
+
+    // Create new post
+    const newPost = new Post({
+      title,
+      content,
+      author: req.user._id,
+      comments: []
+    });
+
+    // Save post to database
+    await newPost.save();
+
+    // Return the new post with author info populated
+    const populatedPost = await Post.findById(newPost._id)
+      .populate('author', 'displayName profileImage');
+
+    res.status(201).json(populatedPost);
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating post', error: error.message });
   }
 };

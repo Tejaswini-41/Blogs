@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 
 function Navbar() {
@@ -13,8 +14,9 @@ function Navbar() {
         return response.json();
       })
       .then((data) => {
-        setUser(data);
-        console.log("user", data);
+        if (data && data._id) {
+          setUser(data);
+        }
       })
       .catch((error) => {
         console.error("Error fetching user:", error);
@@ -25,13 +27,16 @@ function Navbar() {
     <nav>
       <div className="navbar-container">
         <div className="navbar-logo">
-          <a href="/">
+          <Link to="/">
             <img src="/blogimage.jpeg" alt="Blog Logo" />
-          </a>
+          </Link>
         </div>
         <div className="navbar-links">
           {user ? (
             <>
+              <Link to="/new-post" className="create-post-btn">
+                Create Post
+              </Link>
               <p>Welcome, {user.displayName}</p>
               <a href="http://localhost:5000/auth/logout">Logout</a>
             </>
