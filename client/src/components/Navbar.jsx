@@ -23,15 +23,22 @@ function Navbar() {
 
   return (
     <nav>
-      <div>
-        {user ? (
-          <>
-            <p>Welcome, {user.displayName}</p>
-            <a href="http://localhost:5000/auth/logout">Logout</a>
-          </>
-        ) : (
-          <a href="http://localhost:5000/auth/google">Login with Google</a>
-        )}
+      <div className="navbar-container">
+        <div className="navbar-logo">
+          <a href="/">
+            <img src="/blogimage.jpeg" alt="Blog Logo" />
+          </a>
+        </div>
+        <div className="navbar-links">
+          {user ? (
+            <>
+              <p>Welcome, {user.displayName}</p>
+              <a href="http://localhost:5000/auth/logout">Logout</a>
+            </>
+          ) : (
+            <a href="http://localhost:5000/auth/google">Login with Google</a>
+          )}
+        </div>
       </div>
     </nav>
   );
