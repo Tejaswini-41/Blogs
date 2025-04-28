@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import Comment from '../../components/Comment.jsx';
 import './BlogPost.css';
 import Sidebar from '../../components/Sidebar.jsx';
 
-
 function BlogPost() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [commenting, setCommenting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const commentsRef = useRef(null);
   const location = useLocation();
   
@@ -129,6 +130,39 @@ function BlogPost() {
     }
   };
 
+  // Helper function to check if user is the author
+  const isPostAuthor = () => {
+    return user && post && user._id === post.author._id;
+  };
+
+  // Handle post deletion
+  const handleDeletePost = async () => {
+    if (!window.confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+      return;
+    }
+    
+    setIsDeleting(true);
+    
+    try {
+      const response = await fetch(`http://localhost:5000/posts/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to delete post');
+      }
+      
+      // Redirect to home page after successful deletion
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Failed to delete post: ' + error.message);
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="quora-container">
       <div className="quora-layout">
@@ -150,6 +184,21 @@ function BlogPost() {
                   <span className="post-date">{formatDate(post.createdAt)}</span>
                   {post.author && <span className="post-author">By: {post.author.displayName || 'Anonymous'}</span>}
                 </div>
+                
+                {isPostAuthor() && (
+                  <div className="post-author-actions">
+                    <Link to={`/edit-post/${id}`} className="edit-post-btn">
+                      Edit Post
+                    </Link>
+                    <button 
+                      className="delete-post-btn"
+                      onClick={handleDeletePost}
+                      disabled={isDeleting}
+                    >
+                      {isDeleting ? 'Deleting...' : 'Delete Post'}
+                    </button>
+                  </div>
+                )}
               </div>
               
               <div className="post-content-full">

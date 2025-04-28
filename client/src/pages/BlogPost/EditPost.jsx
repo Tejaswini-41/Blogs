@@ -1,26 +1,54 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './NewPost.css';
+import { useParams, useNavigate } from 'react-router-dom';
+import './EditPost.css';
 
-function NewPost() {
+function EditPost() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [imageUrl, setImageUrl] = useState(''); // Add state for image URL
-  const [showPreview, setShowPreview] = useState(false); // Add state for image preview
+  const [imageUrl, setImageUrl] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
 
-  // Check if user is authenticated
+  // Default image URL
+  const defaultImageUrl = 'https://cdn.logojoy.com/wp-content/uploads/2018/05/30164225/572-768x591.png';
+
+  // Check if user is authenticated and fetch post data
   useEffect(() => {
+    // Get current user
     fetch('http://localhost:5000/auth/current_user', { credentials: 'include' })
       .then(response => response.json())
-      .then(data => {
-        if (data && data._id) {
-          setUser(data);
+      .then(userData => {
+        if (userData && userData._id) {
+          setUser(userData);
+          
+          // Fetch the post data
+          fetch(`http://localhost:5000/posts/${id}`, { credentials: 'include' })
+            .then(response => {
+              if (!response.ok) throw new Error('Post not found or you do not have permission');
+              return response.json();
+            })
+            .then(postData => {
+              // Check if user is the author
+              if (postData.author._id !== userData._id) {
+                throw new Error('You can only edit your own posts');
+              }
+              
+              setTitle(postData.title);
+              setContent(postData.content);
+              setImageUrl(postData.imageUrl || '');
+              setIsLoading(false);
+            })
+            .catch(error => {
+              setError(error.message);
+              setIsLoading(false);
+            });
         } else {
-          // Redirect to login if not authenticated
+          // Redirect to home if not authenticated
           navigate('/');
         }
       })
@@ -28,12 +56,11 @@ function NewPost() {
         console.error('Error fetching user:', error);
         navigate('/');
       });
-  }, [navigate]);
+  }, [id, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Simple validation
     if (!title.trim() || !content.trim()) {
       setError('Title and content are required');
       return;
@@ -43,51 +70,48 @@ function NewPost() {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:5000/posts', {
-        method: 'POST',
+      const response = await fetch(`http://localhost:5000/posts/${id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify({ 
           title, 
           content,
-          imageUrl: imageUrl.trim() || undefined // Send image URL if provided
+          imageUrl: imageUrl.trim() || undefined 
         })
       });
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to create post');
+        throw new Error(errorData.message || 'Failed to update post');
       }
       
-      const newPost = await response.json();
-      
-      // Redirect to the newly created post
-      navigate(`/post/${newPost._id}`);
+      const updatedPost = await response.json();
+      navigate(`/post/${updatedPost._id}`);
     } catch (error) {
       setError(error.message);
-    } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Function to handle image preview
+  // Handle image preview
   const handleImagePreview = () => {
     if (imageUrl.trim()) {
       setShowPreview(true);
     }
   };
 
-  if (!user) {
-    return <div className="loading-container">Checking authentication...</div>;
+  if (isLoading) {
+    return <div className="loading-container">Loading post...</div>;
   }
 
   return (
-    <div className="new-post-container">
-      <h1>Create New Post</h1>
+    <div className="edit-post-container">
+      <h1>Edit Post</h1>
       
       {error && <div className="error-message">{error}</div>}
       
-      <form onSubmit={handleSubmit} className="new-post-form">
+      <form onSubmit={handleSubmit} className="edit-post-form">
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input
@@ -100,7 +124,6 @@ function NewPost() {
           />
         </div>
         
-        {/* Update the image URL form group */}
         <div className="form-group">
           <label htmlFor="imageUrl">
             Image URL (optional - default image will be used if left empty)
@@ -126,11 +149,10 @@ function NewPost() {
             )}
           </div>
           
-          {/* Image preview */}
           {showPreview && (
             <div className="image-preview">
               <img 
-                src={imageUrl || 'https://cdn.logojoy.com/wp-content/uploads/2018/05/30164225/572-768x591.png'} 
+                src={imageUrl || defaultImageUrl} 
                 alt="Preview" 
                 onError={(e) => {
                   e.target.onerror = null;
@@ -164,7 +186,7 @@ function NewPost() {
           <button 
             type="button" 
             className="cancel-button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate(`/post/${id}`)}
           >
             Cancel
           </button>
@@ -173,7 +195,7 @@ function NewPost() {
             className="submit-button"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Creating...' : 'Create Post'}
+            {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </form>
@@ -181,4 +203,4 @@ function NewPost() {
   );
 }
 
-export default NewPost;
+export default EditPost;

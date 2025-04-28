@@ -1,4 +1,4 @@
-.new-post-container {
+.edit-post-container {
   max-width: 800px;
   margin: 2rem auto;
   padding: 2rem;
@@ -8,13 +8,13 @@
   border: 1px solid #e8e8e8;
 }
 
-.new-post-container h1 {
+.edit-post-container h1 {
   color: #0a5c5c;
   margin-bottom: 1.5rem;
   font-size: 2rem;
 }
 
-.new-post-form {
+.edit-post-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -126,6 +126,13 @@
 
 .preview-btn:hover {
   background-color: #e0e0e0;
+}
+
+.default-image-note {
+  color: #777;
+  font-size: 0.9rem;
+  font-style: italic;
+  padding: 0.5rem 0;
 }
 
 .image-preview {

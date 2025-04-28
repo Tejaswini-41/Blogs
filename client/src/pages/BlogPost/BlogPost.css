@@ -213,3 +213,56 @@
     max-height: 300px;
   }
 }
+
+/* Add these styles to your existing CSS */
+
+.post-author-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.edit-post-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0a5c5c;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  border: none;
+  font-size: 0.95rem;
+}
+
+.edit-post-btn:hover {
+  background-color: #084a4a;
+}
+
+.delete-post-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #d32f2f;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.delete-post-btn:hover {
+  background-color: #b71c1c;
+}
+
+.delete-post-btn:disabled {
+  background-color: #e57373;
+  cursor: not-allowed;
+}

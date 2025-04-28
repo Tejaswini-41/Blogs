@@ -176,3 +176,68 @@ export const createPost = async (req, res) => {
     res.status(500).json({ message: 'Error creating post', error: error.message });
   }
 };
+
+// Update a post
+export const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, imageUrl } = req.body;
+    
+    // Find the post
+    const post = await Post.findById(id);
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Check if user is the author of the post
+    if (post.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You can only edit your own posts' });
+    }
+    
+    // Update post fields
+    post.title = title || post.title;
+    post.content = content || post.content;
+    
+    // Only update imageUrl if it's provided
+    if (imageUrl !== undefined) {
+      post.imageUrl = imageUrl;
+    }
+    
+    await post.save();
+    
+    const updatedPost = await Post.findById(id)
+      .populate('author', 'displayName profileImage')
+      .populate('comments.author', 'displayName profileImage');
+    
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating post', error: error.message });
+  }
+};
+
+// Delete a post
+export const deletePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Find the post
+    const post = await Post.findById(id);
+    
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Check if user is the author of the post
+    if (post.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'You can only delete your own posts' });
+    }
+    
+    // Delete the post
+    await Post.findByIdAndDelete(id);
+    
+    res.status(200).json({ message: 'Post deleted successfully', postId: id });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting post', error: error.message });
+  }
+};
