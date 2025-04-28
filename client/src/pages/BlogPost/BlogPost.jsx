@@ -156,6 +156,18 @@ function BlogPost() {
                 {post.content.split('\n').map((paragraph, idx) => (
                   paragraph && <p key={idx}>{paragraph}</p>
                 ))}
+                {post.imageUrl && (
+                  <div className="post-image-full">
+                    <img 
+                      src={post.imageUrl || 'https://cdn.logojoy.com/wp-content/uploads/2018/05/30164225/572-768x591.png'} 
+                      alt={post.title} 
+                      onError={(e) => {
+                        e.target.onerror = null; // Prevent infinite loop
+                        e.target.src = 'https://placehold.co/600x400/e0e0e0/0a5c5c?text=Image+Not+Found';
+                      }}
+                    />
+                  </div>
+                )}
               </div>
               
               <div className="post-actions">

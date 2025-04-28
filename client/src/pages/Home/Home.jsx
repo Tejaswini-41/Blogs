@@ -49,14 +49,20 @@ function Home() {
             </div>
           ) : (
             <div className="quora-feed">
-              {posts.map(post => (
-                <PostCard key={post._id} post={post} user={user} />
-              ))}
+              {posts.length > 0 ? (
+                posts.map(post => (
+                  <PostCard key={post._id} post={post} user={user} />
+                ))
+              ) : (
+                <div className="no-posts">
+                  <p>No posts found. Be the first to create a post!</p>
+                </div>
+              )}
             </div>
           )}
         </div>
         
-        <Sidebar title="Related blog topics"/>
+        {/* <Sidebar title="Related blog topics"/> */}
       </div>
     </div>
   );

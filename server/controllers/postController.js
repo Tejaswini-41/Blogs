@@ -150,30 +150,24 @@ export const deleteComment = async (req, res) => {
 // Create a new post
 export const createPost = async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, imageUrl } = req.body;
     
     // Validate input
     if (!title || !content) {
       return res.status(400).json({ message: 'Title and content are required' });
     }
 
-    // Ensure user is authenticated (this is also checked by middleware)
-    if (!req.user) {
-      return res.status(401).json({ message: 'You must be logged in to create a post' });
-    }
-
-    // Create new post
+    // Create new post with optional image URL
     const newPost = new Post({
       title,
       content,
+      imageUrl, // Add the image URL if provided
       author: req.user._id,
       comments: []
     });
 
-    // Save post to database
     await newPost.save();
-
-    // Return the new post with author info populated
+    
     const populatedPost = await Post.findById(newPost._id)
       .populate('author', 'displayName profileImage');
 

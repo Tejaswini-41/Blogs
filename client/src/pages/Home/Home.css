@@ -58,21 +58,71 @@ body {
   margin: 0 auto;
 }
 
-/* Post Card Styling */
-.quora-feed {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
+/* Fix for overlapping post cards */
 
 .quora-post-card {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  padding: 2rem;
-  margin-bottom: 1.5rem;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  padding: 1.5rem;
   border: 1px solid #e8e8e8;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  height: auto; /* Change from 100% to auto */
+  margin: 0; /* Ensure no extra margins causing overlap */
+  position: relative; /* Add position context */
+  z-index: 1; /* Standard z-index */
+}
+
+.quora-post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  z-index: 2; /* Higher z-index when hovering */
+}
+
+/* Fix image container height */
+.post-image-container {
+  margin: 0.75rem 0; 
+  border-radius: 6px;
+  overflow: hidden;
+  max-height: 200px;
+  position: relative;
+  height: auto; /* Ensure height is based on content */
+}
+
+.post-image {
+  width: 100%;
+  height: auto; /* Change from 100 to auto */
+  object-fit: cover; /* Add this to maintain aspect ratio */
+  display: block;
+  transition: transform 0.3s ease;
+  max-height: 200px; /* Ensure images don't exceed container */
+}
+
+/* Clean up conflicting feed styles */
+.quora-feed {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 1.5rem;
+  row-gap: 4rem; /* Keep large gap between rows */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 2rem;
+}
+
+/* Clean up redundant media queries - keep only these */
+@media (max-width: 767px) {
+  .quora-feed {
+    grid-template-columns: 1fr; /* One column on mobile */
+    row-gap: 3rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .quora-feed {
+    grid-template-columns: repeat(2, 1fr); /* Always two columns on larger screens */
+  }
 }
 
 .quora-post-card:hover {
@@ -83,9 +133,9 @@ body {
 .post-metadata {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  gap: 0.5rem; /* Reduced from 0.75rem */
+  margin-bottom: 0.75rem; /* Reduced from 1rem */
+  font-size: 0.85rem; /* Reduced from 0.9rem */
   color: #6b6b6b;
 }
 
@@ -94,10 +144,10 @@ body {
 }
 
 .post-title {
-  font-size: 1.8rem;
+  font-size: 1.5rem; /* Reduced from 1.8rem */
   font-weight: 700;
   color: #222;
-  margin: 0.75rem 0;
+  margin: 0.5rem 0; /* Reduced from 0.75rem */
   line-height: 1.3;
   transition: color 0.2s ease;
 }
@@ -108,17 +158,22 @@ body {
 
 .post-excerpt {
   color: #444;
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin: 1.25rem 0;
+  font-size: 0.95rem; /* Reduced from 1.05rem */
+  line-height: 1.5; /* Reduced from 1.6 */
+  margin: 1rem 0; /* Reduced from 1.25rem */
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Limit to 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex-grow: 1;
 }
 
 /* Post Actions */
 .post-actions {
   display: flex;
-  gap: 1rem;
-  padding-top: 1.25rem;
-  margin-top: 1.25rem;
+  gap: 0.75rem; /* Reduced from 1rem */
+  padding-top: 1rem; /* Reduced from 1.25rem */
+  margin-top: 1rem; /* Reduced from 1.25rem */
   border-top: 1px solid #f0f0f0;
 }
 
@@ -127,10 +182,10 @@ body {
   align-items: center;
   gap: 0.5rem;
   color: #555;
-  font-size: 0.95rem;
+  font-size: 0.85rem; /* Reduced from 0.95rem */
   font-weight: 500;
   cursor: pointer;
-  padding: 0.6rem 1rem;
+  padding: 0.4rem 0.75rem; /* Reduced from 0.6rem 1rem */
   border-radius: 2rem;
   text-decoration: none;
   border: 1px solid transparent;
@@ -154,7 +209,7 @@ body {
 }
 
 .action-icon {
-  font-size: 1.1rem;
+  font-size: 1rem; /* Reduced from 1.1rem */
 }
 
 /* Comment specific styling */
@@ -540,6 +595,15 @@ html {
   .comment-edit-form {
     margin-left: 0;
   }
+  
+  .quora-feed {
+    grid-template-columns: 1fr; /* One column on mobile */
+    row-gap: 2rem; /* Slightly smaller gap on mobile */
+  }
+  
+  .post-image-container {
+    max-height: 180px;
+  }
 }
 
 /* High-DPI Screens */
@@ -551,98 +615,77 @@ html {
   }
 }
 
-/* Add these styles to your existing CSS */
+/* Update the post-author-avatar class */
 
-/* Sort Controls */
-.sort-controls {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  background-color: white;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #e8e8e8;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+.post-author-avatar {
+  width: 24px; /* Reduced from 28px */
+  height: 24px; /* Reduced from 28px */
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #f0f0f0; /* Smaller border */
+  margin-right: 0.5rem;
+  vertical-align: middle; /* Better alignment with text */
 }
 
-.sort-controls label {
+/* You might want to adjust related styles too */
+.post-author {
   font-weight: 600;
   color: #333;
-  margin-right: 0.75rem;
+  font-size: 0.9rem; /* Slightly smaller font */
 }
 
-.sort-select {
-  padding: 0.5rem 1rem 0.5rem 0.75rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  color: #333;
-  background-color: #f9f9f9;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131313%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem top 50%;
-  background-size: 0.65rem auto;
+/* Post image styling in cards */
+.post-image-container {
+  margin: 0.75rem 0; /* Reduced from 1rem */
+  border-radius: 6px; /* Reduced from 8px */
+  overflow: hidden;
+  max-height: 200px;
+  position: relative;
 }
 
-.sort-select:focus {
-  outline: none;
-  border-color: #0a5c5c;
-  box-shadow: 0 0 0 2px rgba(10, 92, 92, 0.1);
+.post-image {
+  width: 100%;
+  height: 100;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
-/* No posts message */
-.no-posts {
-  text-align: center;
-  padding: 3rem;
-  background-color: white;
-  border-radius: 8px;
-  border: 1px solid #e8e8e8;
+.quora-post-card:hover .post-image {
+  transform: scale(1.02);
 }
 
-.no-posts p {
-  color: #777;
-  font-size: 1.05rem;
-  margin-bottom: 1.5rem;
-}
-
-.create-first-post {
-  display: inline-block;
-  background-color: #0a5c5c;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  text-decoration: none;
-  border-radius: 24px;
-  font-weight: 600;
-  transition: background-color 0.2s;
-}
-
-.create-first-post:hover {
-  background-color: #083e3e;
-}
-
-/* Sidebar create post button */
-.sidebar-create-post {
+/* Image placeholder for failed loads */
+.post-image-placeholder {
+  width: 100%;
+  height: 150px;
+  background-color: #f0f0f0;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background-color: #0a5c5c;
-  color: white;
-  padding: 0.75rem 1rem;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
-  margin-top: 0.5rem;
-  transition: background-color 0.2s;
+  justify-content: center;
+  color: #999;
+  font-size: 0.9rem;
 }
 
-.sidebar-create-post:hover {
-  background-color: #083e3e;
+/* Make the layout more efficient with 3 cards per row on large screens */
+@media (min-width: 1200px) {
+  .quora-feed {
+    grid-template-columns: repeat(2, 1fr); /* Keep at two columns */
+  }
+  
+  .quora-post-card {
+    margin-bottom: 0;
+  }
 }
 
-.create-icon {
-  font-weight: bold;
-  font-size: 1.2rem;
+/* Two cards per row on medium screens */
+@media (min-width: 768px) and (max-width: 1199px) {
+  .quora-feed {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+  
+  .quora-post-card {
+    margin-bottom: 0;
+  }
 }

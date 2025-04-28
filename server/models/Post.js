@@ -9,7 +9,6 @@ const commentSchema = Schema(
       ref: 'User',
       required: true
     },
-    // readtime: { type: Number, default: 0 }, // Estimated reading time for the comment
   },
   { timestamps: true }
 );
@@ -18,6 +17,7 @@ const postSchema = Schema(
   {
     title: { type: String, required: true },
     content: { type: String, required: true },
+    imageUrl: { type: String }, // image URL field
     author: {
       type: Schema.Types.ObjectId,
       ref: 'User',
