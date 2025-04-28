@@ -1,17 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaRegComment, FaRegThumbsUp } from 'react-icons/fa';
 
 function PostCard({ post, user }) {
-  const navigate = useNavigate();
-  
-  const handleCommentClick = (e) => {
-    e.preventDefault();
-    
-    // Simply navigate to post with comments hash, authentication check happens there
-    navigate(`/post/${post._id}#comments`);
-  };
-
   return (
     <div className="quora-post-card">
       <div className="post-metadata">
@@ -32,13 +23,13 @@ function PostCard({ post, user }) {
           <span>{post.upvotes?.length || 0} Upvotes</span>
         </button>
         
-        <button 
-          className={`post-action ${user ? 'comment-enabled' : ''}`} 
-          onClick={handleCommentClick}
+        <Link 
+          to={`/post/${post._id}#comments`}
+          className={`post-action ${user ? 'comment-enabled' : ''}`}
         >
           <FaRegComment className="action-icon" />
           <span>{post.comments?.length || 0} Comments</span>
-        </button>
+        </Link>
         
         <Link to={`/post/${post._id}`} className="post-action read-more">
           Read more

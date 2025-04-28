@@ -159,24 +159,32 @@ function BlogPost() {
               </div>
               
               <div className="post-actions">
-                <div className="post-action">
+                <button className="post-action">
                   <span className="action-icon">👍</span>
                   <span>Upvote</span>
-                </div>
-                <div className="post-action">
+                </button>
+                
+                <button 
+                  className="post-action"
+                  onClick={() => {
+                    if (commentsRef.current) {
+                      commentsRef.current.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
                   <span className="action-icon">💬</span>
-                  <span>Comment</span>
-                </div>
-                <div className="post-action">
+                  <span>Comments ({post.comments?.length || 0})</span>
+                </button>
+                
+                <button className="post-action">
                   <span className="action-icon">⤴️</span>
                   <span>Share</span>
-                </div>
+                </button>
               </div>
               
-              <div className="comments-section" ref={commentsRef}>
+              <div className="comments-section" ref={commentsRef} id="comments">
                 <h3>Comments ({post.comments?.length || 0})</h3>
                 
- {/* Comment Form */}
                 {user ? (
                   <form onSubmit={handleCommentSubmit} className="comment-form">
                     <textarea
@@ -195,9 +203,11 @@ function BlogPost() {
                     </button>
                   </form>
                 ) : (
-                  <p className="login-prompt">
-                    <a href="http://localhost:5000/auth/google">Login with Google</a> to leave a comment.
-                  </p>
+                  <div className="login-prompt">
+                    <p>
+                      <a href="http://localhost:5000/auth/google">Login with Google</a> to leave a comment.
+                    </p>
+                  </div>
                 )}
                 
                 {/* Comments List - Now sorted with newest first */}
