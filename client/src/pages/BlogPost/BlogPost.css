@@ -1,0 +1,44 @@
+.quora-post-detail {
+    background: white;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    border: 1px solid #e2e2e2;
+  }
+  
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: teal; /* Teal color */
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .back-link:hover {
+    background-color: #006d6d; /* Darker teal on hover */
+  }
+  
+  
+  .post-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  .post-content-full {
+    color: #282829;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 1.5rem 0;
+  }
+  
+  .post-content-full p {
+    margin-bottom: 1.2rem;
+  }

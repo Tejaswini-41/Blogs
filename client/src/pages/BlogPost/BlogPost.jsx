@@ -1,18 +1,35 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Comment from './Comment.jsx';
-import './Home.css'; // Reusing the same styles
+import Comment from '../../components/Comment.jsx';
+import './BlogPost.css';
+import Sidebar from '../../components/Sidebar.jsx';
+
 
 function BlogPost() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [commentText, setCommentText] = useState('');
+  const [commenting, setCommenting] = useState(false);
+  
+  // Fetch current user
+  useEffect(() => {
+    fetch('http://localhost:5000/auth/current_user', { credentials: 'include' })
+      .then(response => response.json())
+      .then(data => {
+        setUser(data);
+      })
+      .catch(error => console.error('Error fetching user:', error));
+  }, []);
 
+  // Fetch post
   useEffect(() => {
     setLoading(true);
     fetch(`http://localhost:5000/posts/${id}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log('Fetched post:', data); // Log the post data
         setPost(data);
         setLoading(false);
       })
@@ -21,6 +38,35 @@ function BlogPost() {
         setLoading(false);
       });
   }, [id]);
+
+  // Handle comment submission
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!commentText.trim()) return;
+    setCommenting(true);
+    
+    try {
+      const response = await fetch(`http://localhost:5000/posts/${id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ text: commentText })
+      });
+      
+      if (!response.ok) throw new Error('Failed to add comment');
+      
+      const updatedPost = await response.json();
+      setPost(updatedPost);
+      setCommentText('');
+    } catch (error) {
+      console.error('Error adding comment:', error);
+    } finally {
+      setCommenting(false);
+    }
+  };
 
   // Helper function to format date
   const formatDate = (dateString) => {
@@ -55,7 +101,7 @@ function BlogPost() {
                 <h1 className="post-title">{post.title}</h1>
                 <div className="post-metadata">
                   <span className="post-date">{formatDate(post.createdAt)}</span>
-                  {post.author && <span className="post-author">By: {post.author}</span>}
+                  {post.author && <span className="post-author">By: {post.author.displayName || 'Anonymous'}</span>}
                 </div>
               </div>
               
@@ -82,13 +128,41 @@ function BlogPost() {
               
               <div className="comments-section">
                 <h3>Comments ({post.comments?.length || 0})</h3>
+                
+ {/* Comment Form */}
+                {user ? (
+                  <form onSubmit={handleCommentSubmit} className="comment-form">
+                    <textarea
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Write a comment..."
+                      rows="3"
+                      required
+                    ></textarea>
+                    <button 
+                      type="submit" 
+                      disabled={commenting || !commentText.trim()}
+                      className="comment-submit"
+                    >
+                      {commenting ? 'Posting...' : 'Post Comment'}
+                    </button>
+                  </form>
+                ) : (
+                  <p className="login-prompt">
+                    <a href="http://localhost:5000/auth/google">Login with Google</a> to leave a comment.
+                  </p>
+                )}
+                
+                {/* Comments List - Now sorted with newest first */}
                 {post.comments && post.comments.length > 0 ? (
                   <ul className="comment-list">
-                    {post.comments.map((comment, index) => (
-                      <li key={comment.id || index} className="comment-item">
-                        <Comment comment={comment} />
-                      </li>
-                    ))}
+                    {[...post.comments]
+                      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                      .map((comment, index) => (
+                        <li key={comment._id || index} className="comment-item">
+                          <Comment comment={comment} />
+                        </li>
+                      ))}
                   </ul>
                 ) : (
                   <p className="no-comments">No comments yet. Be the first to share your thoughts!</p>
@@ -98,17 +172,7 @@ function BlogPost() {
           )}
         </div>
         
-        <div className="quora-sidebar">
-          <div className="sidebar-section">
-            <h3>Related Topics</h3>
-            <ul className="topic-list">
-              <li><a href="#">Technology</a></li>
-              <li><a href="#">Science</a></li>
-              <li><a href="#">Health</a></li>
-              <li><a href="#">Business</a></li>
-            </ul>
-          </div>
-        </div>
+        <Sidebar title="Related Topics" />
       </div>
     </div>
   );

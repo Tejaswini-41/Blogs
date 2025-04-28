@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "./Home.css";
+import Sidebar from '../../components/Sidebar.jsx';
 
 function Home() {
   const [posts, setPosts] = useState([]);
@@ -88,20 +89,10 @@ function Home() {
           )}
         </div>
         
-        <div className="quora-sidebar">
-          <div className="sidebar-section">
-            <h3>Popular blog Topics</h3>
-            <ul className="topic-list">
-              <li><a href="#">Technology</a></li>
-              <li><a href="#">Cloud Computing</a></li>
-              <li><a href="#">Health</a></li>
-              <li><a href="#">Business</a></li>
-              <li><a href="#">Education</a></li>
-            </ul>
-          </div>
-        </div>
+
+      <Sidebar title="Related blog topics"/>  
       </div>
-    </div>
+      </div>
   );
 }
 
