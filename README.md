@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://blogs-six-beta.vercel.app"><img src="https://img.shields.io/badge/View_Frontend_Demo-Vercel-blue?style=for-the-badge&logo=vercel" alt="Frontend Demo"></a>
+  <!-- <a href="https://blogs-six-beta.vercel.app"><img src="https://img.shields.io/badge/View_Frontend_Demo-Vercel-blue?style=for-the-badge&logo=vercel" alt="Frontend Demo"></a> -->
   <a href="https://drive.google.com/drive/folders/1ofNx06XGDIeyudOSy3672XkejEaWBQf3?usp=sharing"><img src="https://img.shields.io/badge/Watch_Video_Demo-Drive-red?style=for-the-badge&logo=google-drive" alt="Video Demo"></a>
 </p>
 
