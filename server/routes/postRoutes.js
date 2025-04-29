@@ -7,7 +7,8 @@ import {
   deleteComment,
   createPost,
   updatePost,
-  deletePost 
+  deletePost,
+  toggleUpvote // Add this import
 } from '../controllers/postController.js';
 import { ensureAuthenticated } from '../middleware/authMiddleware.js';
 
@@ -26,5 +27,8 @@ router.delete('/:postId/comments/:commentId', ensureAuthenticated, deleteComment
 router.post('/', ensureAuthenticated, createPost);
 router.put('/:id', ensureAuthenticated, updatePost);
 router.delete('/:id', ensureAuthenticated, deletePost);
+
+// Upvote route
+router.post('/:id/upvote', ensureAuthenticated, toggleUpvote);
 
 export default router;

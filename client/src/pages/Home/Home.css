@@ -706,3 +706,18 @@ html {
   position: relative;
   z-index: 2;
 }
+
+/* Add to your existing CSS */
+.post-action.upvoted {
+  color: #e53935;
+  font-weight: 600;
+}
+
+.post-action.upvoted:hover {
+  background-color: rgba(229, 57, 53, 0.08);
+}
+
+.post-action:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

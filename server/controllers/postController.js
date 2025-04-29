@@ -26,6 +26,7 @@ export const getPosts = async (req, res) => {
           createdAt: 1,
           updatedAt: 1,
           commentCount: { $size: "$comments" },
+          upvotes: 1, // Include upvotes array
           author: {
             _id: "$authorDetails._id",
             displayName: "$authorDetails.displayName",
@@ -92,6 +93,7 @@ export const getPostById = async (req, res) => {
           imageUrl: 1,
           createdAt: 1,
           updatedAt: 1,
+          upvotes: 1, // Include upvotes array
           author: {
             _id: "$authorDetails._id",
             displayName: "$authorDetails.displayName",
@@ -343,5 +345,46 @@ export const deletePost = async (req, res) => {
     res.status(200).json({ message: 'Post deleted successfully', postId: id });
   } catch (error) {
     res.status(500).json({ message: 'Error deleting post', error: error.message });
+  }
+};
+
+// Toggle upvote on a post
+export const toggleUpvote = async (req, res) => {
+  try {
+    // Ensure user is authenticated
+    if (!req.user) {
+      return res.status(401).json({ message: 'You must be logged in to upvote' });
+    }
+
+    const { id } = req.params;
+    const userId = req.user._id;
+    
+    // Find the post
+    const post = await Post.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: 'Post not found' });
+    }
+    
+    // Check if user has already upvoted
+    const upvoteIndex = post.upvotes.indexOf(userId);
+    
+    if (upvoteIndex === -1) {
+      // User hasn't upvoted yet, add upvote
+      post.upvotes.push(userId);
+    } else {
+      // User already upvoted, remove upvote
+      post.upvotes.splice(upvoteIndex, 1);
+    }
+    
+    await post.save();
+    
+    res.status(200).json({ 
+      postId: post._id, 
+      upvotes: post.upvotes, 
+      upvoteCount: post.upvotes.length,
+      userUpvoted: upvoteIndex === -1 // true if the user just upvoted, false if removed
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Error toggling upvote', error: error.message });
   }
 };

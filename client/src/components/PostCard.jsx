@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 function PostCard({ post, user }) {
+  // Track if a post has been upvoted by the current user
+  const [upvoted, setUpvoted] = useState(post.upvotes?.includes(user?._id));
+  const [upvoteCount, setUpvoteCount] = useState(post.upvotes?.length || 0);
+  const [isUpvoting, setIsUpvoting] = useState(false);
+
   // Format date in a compact format
   const formatDate = (dateString) => {
     try {
@@ -25,6 +30,45 @@ function PostCard({ post, user }) {
 
   // Default image URL to use when no image is provided
   const defaultImageUrl = 'https://cdn.logojoy.com/wp-content/uploads/2018/05/30164225/572-768x591.png';
+
+  // Handle upvote click
+  const handleUpvote = async (e) => {
+    e.stopPropagation();
+    
+    // If user is not logged in, don't allow upvoting
+    if (!user) {
+      alert('Please log in to upvote posts');
+      return;
+    }
+    
+    if (isUpvoting) return; // Prevent multiple clicks
+    
+    setIsUpvoting(true);
+    
+    try {
+      const response = await fetch(`http://localhost:5000/posts/${post._id}/upvote`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to upvote post');
+      }
+      
+      const data = await response.json();
+      
+      // Update local state
+      setUpvoted(data.userUpvoted);
+      setUpvoteCount(data.upvoteCount);
+    } catch (error) {
+      console.error('Error upvoting post:', error);
+    } finally {
+      setIsUpvoting(false);
+    }
+  };
 
   return (
     <div className="quora-post-card">
@@ -62,9 +106,13 @@ function PostCard({ post, user }) {
       </Link>
       
       <div className="post-actions">
-        <button className="post-action" onClick={(e) => e.stopPropagation()}>
-          <span className="action-icon">👍</span>
-          <span>{post.upvotes?.length || 0}</span>
+        <button 
+          className={`post-action ${upvoted ? 'upvoted' : ''}`} 
+          onClick={handleUpvote}
+          disabled={isUpvoting}
+        >
+          <span className="action-icon">{upvoted ? '❤️' : '👍'}</span>
+          <span>{upvoteCount}</span>
         </button>
         
         <Link 

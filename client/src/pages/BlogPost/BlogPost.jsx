@@ -206,9 +206,46 @@ function BlogPost() {
               </div>
               
               <div className="post-actions">
-                <button className="post-action">
-                  <span className="action-icon">👍</span>
-                  <span>Upvote</span>
+                <button 
+                  className={`post-action ${post.upvotes?.includes(user?._id) ? 'upvoted' : ''}`}
+                  onClick={async () => {
+                    if (!user) {
+                      alert('Please log in to upvote posts');
+                      return;
+                    }
+
+                    try {
+                      const response = await fetch(`http://localhost:5000/posts/${id}/upvote`, {
+                        method: 'POST',
+                        headers: {
+                          'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                      });
+                      
+                      if (!response.ok) {
+                        throw new Error('Failed to upvote post');
+                      }
+                      
+                      const data = await response.json();
+                      
+                      // Update post with new upvote data
+                      setPost({
+                        ...post,
+                        upvotes: data.upvotes
+                      });
+                    } catch (error) {
+                      console.error('Error upvoting post:', error);
+                    }
+                  }}
+                >
+                  <span className="action-icon">
+                    {post.upvotes?.includes(user?._id) ? '❤️' : '👍'}
+                  </span>
+                  <span>
+                    {post.upvotes?.includes(user?._id) ? 'Liked' : 'Like'} 
+                    {post.upvotes?.length > 0 && ` (${post.upvotes.length})`}
+                  </span>
                 </button>
                 
                 <button 
