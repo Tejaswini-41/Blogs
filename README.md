@@ -1,7 +1,11 @@
 # Blogs - A Full-Stack Blogging Platform
 
 <p align="center">
-  <img src="https://st.depositphotos.com/2745455/4383/v/450/depositphotos_43831043-stock-illustration-blogging-concept-illustration.jpg" alt="Blogs Platform Logo" width="600">
+  <img src="https://executivecareerbrand.com/wp-content/uploads/2011/04/blog-49006_640.png" alt="Blogs Platform Logo" width="600">
+</p>
+
+<p align="center">
+  <a href="https://blogs-six-beta.vercel.app"><img src="https://img.shields.io/badge/View_Live_Demo-Vercel-blue?style=for-the-badge&logo=vercel" alt="Live Demo"></a>
 </p>
 
 A modern blogging platform built with the MERN stack (MongoDB, Express, React, Node.js) featuring Google OAuth authentication and robust post management functionality.
@@ -77,7 +81,8 @@ A modern blogging platform built with the MERN stack (MongoDB, Express, React, N
 
 ## Usage
 
-- Visit `http://localhost:5173` in your browser
+- Visit [blogs-six-beta.vercel.app](https://blogs-six-beta.vercel.app) to access the live application
+- Or run locally and visit `http://localhost:5173` in your browser
 - Log in with your Google account
 - Create, read, update, or delete blog posts
 - Comment on posts and engage with other users
