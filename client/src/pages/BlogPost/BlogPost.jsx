@@ -281,7 +281,7 @@ function BlogPost() {
           )}
         </div>
         
-        <Sidebar title="Related Topics" />
+        <Sidebar title="Related Topics(coming soon)" />
       </div>
     </div>
   );

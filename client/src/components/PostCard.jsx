@@ -28,41 +28,41 @@ function PostCard({ post, user }) {
 
   return (
     <div className="quora-post-card">
-      <div className="post-metadata">
-        {post.author?.profileImage && (
-          <img 
-            src={post.author.profileImage} 
-            alt={post.author.displayName || 'User'} 
-            className="post-author-avatar"
-          />
-        )}
-        <span className="post-author">{post.author?.displayName || 'Anonymous'}</span>
-        <span className="post-date">
-          {formatDate(post.createdAt)}
-        </span>
-      </div>
-      
-      <Link to={`/post/${post._id}`} className="post-title-link">
+      <Link to={`/post/${post._id}`} className="post-card-link">
+        <div className="post-metadata">
+          {post.author?.profileImage && (
+            <img 
+              src={post.author.profileImage} 
+              alt={post.author.displayName || 'User'} 
+              className="post-author-avatar"
+            />
+          )}
+          <span className="post-author">{post.author?.displayName || 'Anonymous'}</span>
+          <span className="post-date">
+            {formatDate(post.createdAt)}
+          </span>
+        </div>
+        
         <h2 className="post-title">{post.title}</h2>
+        
+        {/* Always show an image container - either with the post's image or the default */}
+        <div className="post-image-container">
+          <img 
+            src={post.imageUrl || defaultImageUrl} 
+            alt={post.title} 
+            className="post-image"
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = defaultImageUrl;
+            }} 
+          />
+        </div>
+        
+        <div className="post-excerpt">{truncateContent(post.content)}</div>
       </Link>
       
-      {/* Always show an image container - either with the post's image or the default */}
-      <div className="post-image-container">
-        <img 
-          src={post.imageUrl || defaultImageUrl} 
-          alt={post.title} 
-          className="post-image"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = defaultImageUrl;
-          }} 
-        />
-      </div>
-      
-      <div className="post-excerpt">{truncateContent(post.content)}</div>
-      
       <div className="post-actions">
-        <button className="post-action">
+        <button className="post-action" onClick={(e) => e.stopPropagation()}>
           <span className="action-icon">👍</span>
           <span>{post.upvotes?.length || 0}</span>
         </button>
@@ -70,9 +70,10 @@ function PostCard({ post, user }) {
         <Link 
           to={`/post/${post._id}#comments`}
           className={`post-action ${user ? 'comment-enabled' : ''}`}
+          onClick={(e) => e.stopPropagation()}
         >
           <span className="action-icon">💬</span>
-          <span>{post.comments?.length || 0}</span>
+          <span>{post.commentCount || post.comments?.length || 0}</span>
         </Link>
         
         <Link to={`/post/${post._id}`} className="post-action read-more">

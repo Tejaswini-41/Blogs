@@ -1,30 +1,134 @@
+import mongoose from 'mongoose';
 import Post from "../models/Post.js"; 
 
-// Get all posts
+// Get all posts with comment counts using aggregation
 export const getPosts = async (req, res) => {
-    try {
-        // Get posts and sort by createdAt in descending order (newest first)
-        const posts = await Post.find({})
-            .sort({ createdAt: -1 })
-            .populate('author', 'displayName profileImage');
-            
-        res.json(posts);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching posts', error: error.message });
-    }
+  try {
+    const posts = await Post.aggregate([
+      {
+        $sort: { createdAt: -1 }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "authorDetails"
+        }
+      },
+      { $unwind: "$authorDetails" },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          content: 1,
+          imageUrl: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          commentCount: { $size: "$comments" },
+          author: {
+            _id: "$authorDetails._id",
+            displayName: "$authorDetails.displayName",
+            profileImage: "$authorDetails.profileImage"
+          }
+        }
+      }
+    ]);
+    
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching posts', error: error.message });
+  }
 };
 
-// Get a single post by ID
+// Get a single post by ID using aggregation pipeline
 export const getPostById = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id)
-      .populate('author', 'displayName profileImage')  
-      .populate('comments.author', 'displayName profileImage');
-      
-    if (!post) {
+    const postId = new mongoose.Types.ObjectId(req.params.id);
+    
+    const result = await Post.aggregate([
+      {
+        $match: { _id: postId }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "author",
+          foreignField: "_id",
+          as: "authorDetails"
+        }
+      },
+      { $unwind: "$authorDetails" },
+      {
+        $addFields: {
+          "comments": {
+            $map: {
+              input: "$comments",
+              as: "comment",
+              in: {
+                _id: "$$comment._id",
+                text: "$$comment.text",
+                createdAt: "$$comment.createdAt",
+                updatedAt: "$$comment.updatedAt",
+                author: "$$comment.author"
+              }
+            }
+          }
+        }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "comments.author",
+          foreignField: "_id",
+          as: "commentAuthors"
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          content: 1,
+          imageUrl: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          author: {
+            _id: "$authorDetails._id",
+            displayName: "$authorDetails.displayName",
+            profileImage: "$authorDetails.profileImage"
+          },
+          comments: {
+            $map: {
+              input: "$comments",
+              as: "comment",
+              in: {
+                _id: "$$comment._id",
+                text: "$$comment.text",
+                createdAt: "$$comment.createdAt",
+                updatedAt: "$$comment.updatedAt",
+                author: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$commentAuthors",
+                        cond: { $eq: ["$$this._id", "$$comment.author"] }
+                      }
+                    },
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    ]);
+    
+    if (!result.length) {
       return res.status(404).json({ message: 'Post not found' });
     }
-    res.json(post);
+    
+    res.json(result[0]);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching post', error: error.message });
   }

@@ -24,6 +24,10 @@ const postSchema = Schema(
       required: true
     },
     comments: [commentSchema],
+    upvotes: [{ 
+      type: Schema.Types.ObjectId, 
+      ref: 'User' 
+    }]
   },
   { timestamps: true }
 );
