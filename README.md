@@ -1,7 +1,7 @@
 # Blogs - A Full-Stack Blogging Platform
 
 <p align="center">
-  <img src="https://www.shutterstock.com/image-vector/content-marketing-blog-writing-sharing-260nw-2499041235.jpg" alt="Blogs Platform Logo" width="600">
+  <img src="https://st.depositphotos.com/2745455/4383/v/450/depositphotos_43831043-stock-illustration-blogging-concept-illustration.jpg" alt="Blogs Platform Logo" width="600">
 </p>
 
 A modern blogging platform built with the MERN stack (MongoDB, Express, React, Node.js) featuring Google OAuth authentication and robust post management functionality.
