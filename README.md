@@ -5,7 +5,8 @@
 </p>
 
 <p align="center">
-  <a href="https://blogs-six-beta.vercel.app"><img src="https://img.shields.io/badge/View_Live_Demo-Vercel-blue?style=for-the-badge&logo=vercel" alt="Live Demo"></a>
+  <a href="https://blogs-six-beta.vercel.app"><img src="https://img.shields.io/badge/View_Frontend_Demo-Vercel-blue?style=for-the-badge&logo=vercel" alt="Frontend Demo"></a>
+  <a href="https://drive.google.com/drive/folders/1ofNx06XGDIeyudOSy3672XkejEaWBQf3?usp=sharing"><img src="https://img.shields.io/badge/Watch_Video_Demo-Drive-red?style=for-the-badge&logo=google-drive" alt="Video Demo"></a>
 </p>
 
 A modern blogging platform built with the MERN stack (MongoDB, Express, React, Node.js) featuring Google OAuth authentication and robust post management functionality.
@@ -81,7 +82,8 @@ A modern blogging platform built with the MERN stack (MongoDB, Express, React, N
 
 ## Usage
 
-- Visit [blogs-six-beta.vercel.app](https://blogs-six-beta.vercel.app) to access the live application
+- Visit [blogs-six-beta.vercel.app](https://blogs-six-beta.vercel.app) to access the frontend demo
+- Watch the [full application demo video](https://drive.google.com/drive/folders/1ofNx06XGDIeyudOSy3672XkejEaWBQf3?usp=sharing) to see all features in action
 - Or run locally and visit `http://localhost:5173` in your browser
 - Log in with your Google account
 - Create, read, update, or delete blog posts
