@@ -29,7 +29,7 @@ app.use(express.json());
 // Configure session
 app.use(
   session({
-    secret: process.env.GOOGLE_CLIENT_SECRET    ,
+    secret: process.env.GOOGLE_CLIENT_SECRET,
     resave: false,
     saveUninitialized: false,
   })

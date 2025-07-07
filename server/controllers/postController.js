@@ -9,6 +9,7 @@ export const getPosts = async (req, res) => {
         $sort: { createdAt: -1 }
       },
       {
+      // Joins the post document with user document based on author ID
         $lookup: {
           from: "users",
           localField: "author",
@@ -49,6 +50,7 @@ export const getPostById = async (req, res) => {
     
     const result = await Post.aggregate([
       {
+        // Similar to a WHERE clause in SQL
         $match: { _id: postId }
       },
       {
@@ -138,6 +140,7 @@ export const getPostById = async (req, res) => {
 
 export const addComment = async (req, res) => {
   try {
+    // extracted id and text from request body
     const { id } = req.params;
     const { text } = req.body;
 
